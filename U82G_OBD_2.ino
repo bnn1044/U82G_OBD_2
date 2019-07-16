@@ -170,6 +170,7 @@ void ReadButton(void){
  Serial.println(current_state.position);
  Timer2.resume();
 }
+
 void UpdateDisplay(void){
    Timer3.pause();
    do{
