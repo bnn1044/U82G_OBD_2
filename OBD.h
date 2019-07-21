@@ -8,11 +8,9 @@
 #include <Arduino.h>
 
 #define OBD_MODEL_UART 0
-#define OBD_MODEL_I2C 1
 
 #define OBD_TIMEOUT_SHORT 2000 /* ms */
 #define OBD_TIMEOUT_LONG 7000 /* ms */
-#define OBD_TIMEOUT_GPS 200 /* ms */
 #define OBD_SERIAL_BAUDRATE 38400
 #define OBD_RECV_BUF_SIZE 128
 
@@ -69,7 +67,8 @@
 #define PID_ENGINE_TORQUE_DEMANDED 0x61
 #define PID_ENGINE_TORQUE_PERCENTAGE 0x62
 #define PID_ENGINE_REF_TORQUE 0x63
-
+#define PID_BOOST_CONTROL     0X70              //(D*256+E)/32
+#define PID_CHARGE_AIR_TEMP   0X77              //B-40
 typedef enum {
     PROTO_AUTO = 0,
     PROTO_ISO_9141_2 = 3,

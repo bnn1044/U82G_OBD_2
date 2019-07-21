@@ -1,3 +1,6 @@
+long FavouriteButtonTimer;
+#define FavouriteButtonTimeout 800   //ms
+
 /*
  * initialize the hardware for button input
  */
@@ -32,19 +35,49 @@ void ReadButton_input() {
 void ReadButton(void){
  Timer2.pause();
  ReadButton_input();
- 
+ handleMenuButton();
+ handleFavouriteButton();
+ Timer2.resume();
+}
+void handleFavouriteButton(){
+
+ if (( inputFlags[2] == LOW )&&( not Menu_Active )){
+   Menu_Favourite = true;
+   inputFlags[2] = HIGH;
+    FavouritePID ++;
+    if ( FavouritePID >= FavouritePID_Max){
+      FavouritePID = 0;
+    }
+    FavouriteButtonTimer = millis();
+ }
+ if (( inputFlags[0] == LOW )&&( not Menu_Active )){
+    inputFlags[0] = HIGH;
+    Menu_Favourite = true;
+    FavouritePID--;
+    if ( FavouritePID < 0){
+      FavouritePID = FavouritePID_Max;
+    }
+    FavouriteButtonTimer = millis();
+ }
+ if ( (( millis()- FavouriteButtonTimer) > FavouriteButtonTimeout ) &&( Menu_Favourite ) ) {
+   Menu_Favourite = false;
+   FavouriteButtonTimer = 0;
+ }
+}
+void handleMenuButton(){
+  
  if ( ( inputFlags[2] == LOW )&&( Menu_Active ) ){to_right(&destination_state);inputFlags[2] = HIGH; NoButtonActiveTime = millis();}
  if ( ( inputFlags[0] == LOW )&&( Menu_Active ) ){to_left(&destination_state);inputFlags[0] = HIGH; NoButtonActiveTime = millis();}
- 
  if ( inputFlags[1] == LOW ){
    if (not Menu_Active){ 
     Menu_Active = true; 
    }
-   
    NoButtonActiveTime = millis();
    inputFlags[1] = HIGH;
    if ( destination_state.position == 5 ){  //exit
     Menu_Active = false;
+    current_state = { ICON_BGAP, ICON_BGAP, 0 };
+    destination_state = { ICON_BGAP, ICON_BGAP, 0 };
    }
   }
   if( ( inputFlags[0] == HIGH) && 
@@ -55,5 +88,4 @@ void ReadButton(void){
     Menu_Active = false;
   }
   
- Timer2.resume();
 }

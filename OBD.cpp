@@ -30,7 +30,6 @@ uint16_t hex2uint16(const char *p)
   }
   return i;
 }
-
 byte hex2uint8(const char *p)
 {
   byte c1 = *p;
@@ -41,7 +40,6 @@ byte hex2uint8(const char *p)
       c1 -= 39;
   else if (c1 < '0' || c1 > '9')
     return 0;
-
   if (c2 >= 'A' && c2 <= 'F')
     c2 -= 7;
   else if (c2 >= 'a' && c2 <= 'f')
@@ -203,13 +201,13 @@ int COBD::normalizeData(byte pid, char* data)
   case PID_INTAKE_MAP:
     temResult = getSmallValue(data);
     result = ( float( temResult ) * 0.14503 - 14.503 )*100.0;
-    
-    /*if( temResult < 100 ){
-       result = int( ( (  float(getSmallValue( data ))-100.0 )-100.0 )*100.0 /6.895 );
-    }else if(temResult >=100 ){
-       result = int( ( float( getSmallValue( data )) -100.0 )*100.0 / 6.895 );
-    }*/
     break;
+  case PID_SPEED:
+    result = getSmallValue(data);
+    result = float( result ) / 1.609;
+    break;
+ // case PID_CHARGE_AIR_TEMP:
+//  case PID_BOOST_CONTROL:
   default:
     result = getSmallValue(data);
   }
@@ -360,9 +358,8 @@ void COBD::recover()
 
 bool COBD::init(OBD_PROTOCOLS protocol)
 {
-  const char *initcmd[] = {"ATZ\r","ATE0\r","ATL1\r"};
+  const char *initcmd[] = {"ATZ\r","ATE0\r","ATL1\r","ATL1\r"};
   char buffer[OBD_RECV_BUF_SIZE];
-
   m_state = OBD_CONNECTING;
   recover();
 
@@ -427,63 +424,6 @@ bool COBD::setBaudRate(unsigned long baudrate)
     recover();
     return true;
 }
-
-bool COBD::initGPS(unsigned long baudrate)
-{
-    char buf[OBD_RECV_BUF_SIZE];
-    sprintf(buf, "ATBR2 %lu\r", baudrate);
-    write(buf);
-    return (receive(buf) && strstr(buf, "OK"));
-}
-
-bool COBD::getGPSData(GPS_DATA* gdata)
-{
-    char buf[OBD_RECV_BUF_SIZE];
-    char *p;
-    write("ATGPS\r");
-    if (receive(buf) == 0 || !(p = strstr(buf, "$GPS")))
-        return false;
-
-    byte index = 0;
-    char *s = buf;
-    s = p + 5;
-    for (p = s; *p; p++) {
-        char c = *p;
-        if (c == ',' || c == '>' || c <= 0x0d) {
-            long value = atol(s);
-            switch (index) {
-            case 0:
-                gdata->date = (uint32_t)value;
-                break;
-            case 1:
-                gdata->time = (uint32_t)value;
-                break;
-            case 2:
-                gdata->lat = value;
-                break;
-            case 3:
-                gdata->lon = value;
-                break;
-            case 4:
-                gdata->alt = value;
-                break;
-            case 5:
-                gdata->speed = value;
-                break;
-            case 6:
-                gdata->heading = value;
-                break;
-            case 7:
-                gdata->sat = value;
-                break;
-            }
-            index++;
-            s = p + 1;
-        }
-    }
-    return index >= 4;
-}
-
 #ifdef DEBUG
 void COBD::debugOutput(const char *s)
 {
