@@ -33,13 +33,7 @@ struct pid_name FavouritePID_List[10] = {
   {PID_COOLANT_TEMP,"COOLANT"},   //0
   {PID_CHARGE_AIR_TEMP,"ITA"},  //1
   {PID_RPM,"RPM"},                //2
-  {PID_SPEED,"SPEED"},            //3
-  {PID_THROTTLE,"THROTTLE"},      //4
   {PID_BOOST_CONTROL,"BOOST"},                  //5
-  {PID_BAROMETRIC,"BAROMETRIC"},    //6
-  {PID_ENGINE_OIL_TEMP,"OIL_TEMP"}, //7
-  {PID_FUEL_PRESSURE,"FUEL_PRESSURE"},  //8
-  {PID_MAF_FLOW,"MAF_FLOW"},            //9
 };
 /*
   Icon configuration

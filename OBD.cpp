@@ -9,7 +9,7 @@
 #include <Wire.h>
 #include "OBD.h"
 
-//#define DEBUG Serial
+#define DEBUG Serial
 
 uint16_t hex2uint16(const char *p)
 {
@@ -206,7 +206,9 @@ int COBD::normalizeData(byte pid, char* data)
     result = getSmallValue(data);
     result = float( result ) / 1.609;
     break;
- // case PID_CHARGE_AIR_TEMP:
+  case PID_CHARGE_AIR_TEMP:
+   result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;
+   break;
 //  case PID_BOOST_CONTROL:
   default:
     result = getSmallValue(data);
