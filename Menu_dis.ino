@@ -136,7 +136,7 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
    u8g2.setCursor(0,31);                                                           //left top corner
    u8g2.print(data1);
 
-   Serial.print("data 2 : ");
+   //Serial.print("data 2 : ");
    obd.read(PID2.PID_Number,data2);
    u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9999"),31);
    if(data2 < 10){
@@ -147,15 +147,13 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
      u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("999"),31);
    }
    u8g2.print(data2);
-   Serial.println(data2);
+  // Serial.println(data2);
    
    obd.read(PID3.PID_Number,data3);
    u8g2.setCursor(0,63);                                                           
    u8g2.print(data3);
 
-
-   Serial.print("data4 : ");
-   obd.read(PID4.PID_Number,data4);  
+   /*obd.read(PID4.PID_Number,data4);  
    u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9999"),63);
    if(data4 < 10 ){
     u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9"),63);
@@ -164,6 +162,5 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
    }else if( data4 < 1000 ){
      u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("999"),63);
    }                                                        
-   u8g2.print(data4);
-   Serial.println(data4);
+   u8g2.print(data4);*/
 }

@@ -9,7 +9,7 @@
 #include <Wire.h>
 #include "OBD.h"
 
-#define DEBUG Serial
+//#define DEBUG Serial
 
 uint16_t hex2uint16(const char *p)
 {
@@ -60,7 +60,6 @@ byte COBD::sendCommand(const char* cmd, char* buf)
   dataIdleLoop();
   return receive(buf);
 }
-
 void COBD::sendQuery(byte pid)
 {
   char cmd[8];
@@ -124,7 +123,7 @@ void COBD::write(char c)
 
 int COBD::normalizeData(byte pid, char* data)
 {
-  int result;
+ int result;
  int temResult;
   switch (pid) {
   case PID_RPM:
@@ -209,7 +208,17 @@ int COBD::normalizeData(byte pid, char* data)
   case PID_CHARGE_AIR_TEMP:
    result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;
    break;
-//  case PID_BOOST_CONTROL:
+  case PID_BOOST_CONTROL:
+   // result = data;
+   for(int i = 0;i<sizeof(data);i++)
+   {
+    Serial.print(i);
+    Serial.print(" : ");
+    Serial.print(data[i]);
+   }
+   Serial.println(" ");
+   break;
+   
   default:
     result = getSmallValue(data);
   }

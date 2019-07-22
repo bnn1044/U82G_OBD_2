@@ -181,15 +181,12 @@ private:
   }
 };
 
-#define I2C_ADDR 0x62
 #define MAX_PAYLOAD_SIZE 32
 #define MAX_PIDS 8
 #define CMD_QUERY_STATUS 0x10
 #define CMD_SEND_AT_COMMAND 0x11
 #define CMD_APPLY_OBD_PIDS 0x12
 #define CMD_LOAD_OBD_DATA 0x13
-#define CMD_GPS_SETUP 0x14
-#define CMD_GPS_QUERY 0x15
 
 typedef struct {
     uint16_t age;
@@ -201,25 +198,3 @@ typedef struct {
     uint8_t message;
     uint8_t data;
 } COMMAND_BLOCK;
-
-/*class COBDI2C : public COBD {
-public:
-  void begin();
-  void end();
-  bool read(byte pid, int& result);
-  void write(const char* s);
-  // API not applicable
-  bool setBaudRate(unsigned long baudrate) { return false; }
-  // Asynchronized access API
-  void setPID(byte pid, byte obdPid[]);
-  void applyPIDs(byte obdPid[]);
-  void loadData(PID_INFO obdInfo[]);
-protected:
-  byte receive(char* buffer = 0, int timeout = OBD_TIMEOUT_SHORT);
-  bool sendCommandBlock(byte cmd, uint8_t data = 0, byte* payload = 0, byte payloadBytes = 0);
-};*/
-
-/*String PID_NAME_SHORT[]{
-  // 0       1         2         3       4         5        6       7      8      9
-  "Boost","Coolant","AirTemp","Igntn","EgTemp","Throttle","Speed","0-60","Batt","Afr"
-};*/
