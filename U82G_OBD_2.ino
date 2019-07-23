@@ -8,7 +8,6 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 COBD obd;
 
 #define ButtonUpdateRate_timer2  50000    //in mills
-//#define DisplauUpdateRate_timer3 200000    //in mills
 
 const int numOfInputs = 3;
 int lastInputState[numOfInputs] = {HIGH,HIGH,HIGH};
@@ -29,6 +28,10 @@ struct pid_name{
   int16_t PID_Number;
   const char *name;
 };
+/*struct PID_name topLeftScr_Pid {
+ PID_COOLANT_TEMP,"COOLANT";
+}*/
+
 struct pid_name FavouritePID_List[10] = {
   {PID_COOLANT_TEMP,"COOLANT"},   //0
   {PID_CHARGE_AIR_TEMP,"ITA"},  //1
@@ -102,9 +105,8 @@ void setup(void) {
 }
 void loop(void) {
    //Serial.println(millis() - preview_time);
- // if ( millis() - preview_time > 5 ){
+   // if ( millis() - preview_time > 5 ){
    UpdateDisplay();
    //preview_time = millis();
-   
- // }
+   // }
 }

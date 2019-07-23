@@ -8,9 +8,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "OBD.h"
-
 //#define DEBUG Serial
-
 uint16_t hex2uint16(const char *p)
 {
   char c = *p;
@@ -209,16 +207,18 @@ int COBD::normalizeData(byte pid, char* data)
    result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;
    break;
   case PID_BOOST_CONTROL:
-   // result = data;
-   for(int i = 0;i<sizeof(data);i++)
-   {
-    Serial.print(i);
-    Serial.print(" : ");
-    Serial.print(data[i]);
-   }
-   Serial.println(" ");
+   Serial.print(data[18]);
+   Serial.print(",");
+   Serial.print(data[19]);
+   Serial.print(",");
+   Serial.print(data[20]);
+   Serial.print(",");
+   Serial.print(data[21]);
+   Serial.print(",");
+   Serial.print(data[22]);
+   Serial.print(",");
+   Serial.println(data[13]);
    break;
-   
   default:
     result = getSmallValue(data);
   }
