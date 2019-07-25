@@ -8,9 +8,8 @@
 #include <Arduino.h>
 
 #define OBD_MODEL_UART 0
-
-#define OBD_TIMEOUT_SHORT 2000 /* ms */
-#define OBD_TIMEOUT_LONG 7000 /* ms */
+#define OBD_TIMEOUT_SHORT 5 /* ms */
+#define OBD_TIMEOUT_LONG 5 /* ms */
 #define OBD_SERIAL_BAUDRATE 38400
 #define OBD_RECV_BUF_SIZE 128
 
@@ -69,6 +68,7 @@
 #define PID_ENGINE_REF_TORQUE 0x63
 #define PID_BOOST_CONTROL     0X70              //(D*256+E)/32
 #define PID_CHARGE_AIR_TEMP   0X77              //B-40
+
 typedef enum {
     PROTO_AUTO = 0,
     PROTO_ISO_9141_2 = 3,
@@ -79,28 +79,14 @@ typedef enum {
     PROTO_CAN_29B_250K = 8,
     PROTO_CAN_11B_250K = 9,
 } OBD_PROTOCOLS;
-
 // states
 typedef enum {
     OBD_DISCONNECTED = 0,
     OBD_CONNECTING = 1,
     OBD_CONNECTED = 2
 } OBD_STATES;
-
-typedef struct {
-    uint32_t date;
-    uint32_t time;
-    int32_t lat;
-    int32_t lon;
-    int16_t alt;
-    uint8_t speed;
-    uint8_t sat;
-    int16_t heading;
-} GPS_DATA;
-
 uint16_t hex2uint16(const char *p);
 uint8_t hex2uint8(const char *p);
-
 class COBD
 {
 public:
@@ -140,16 +126,13 @@ public:
   virtual bool getResult(byte& pid, int& result);
   // determine if the PID is supported
   virtual bool isValidPID(byte pid);
-  // init GPS module
-  virtual bool initGPS(unsigned long baudrate = 38400);
-  // parse GPS data
-  virtual bool getGPSData(GPS_DATA* gdata);
   // set current PID mode
   byte dataMode;
   // occurrence of errors
   byte errors;
   // bit map of supported PIDs
   byte pidmap[4 * 4];
+  
 protected:
   virtual char* getResponse(byte& pid, char* buffer);
   virtual byte receive(char* buffer = 0, int timeout = OBD_TIMEOUT_SHORT);

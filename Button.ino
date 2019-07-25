@@ -1,6 +1,5 @@
 long FavouriteButtonTimer;
 #define FavouriteButtonTimeout 800   //ms
-
 /*
  * initialize the hardware for button input
  */

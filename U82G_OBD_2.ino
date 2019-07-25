@@ -3,11 +3,14 @@
 #include <Wire.h>
 #include <SPI.h>
 #include "OBD.h"
-
+#define LED_BANK         GPIOC
+#define LED_PIN          13
+#define LED_ON_STATE     1
+    
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 COBD obd;
 
-#define ButtonUpdateRate_timer2  50000    //in mills
+#define ButtonUpdateRate_timer2  5000    //in mills
 
 const int numOfInputs = 3;
 int lastInputState[numOfInputs] = {HIGH,HIGH,HIGH};
@@ -80,6 +83,7 @@ struct menu_entry_type menu_entry_list[] =
   { u8g2_font_open_iconic_all_4x_t, 65, "EXIT"},
   { NULL, 0, NULL } 
 };
+
 struct menu_state current_state = { ICON_BGAP, ICON_BGAP, 0 };
 struct menu_state destination_state = { ICON_BGAP, ICON_BGAP, 0 };
 
@@ -96,17 +100,40 @@ void setup(void) {
       u8g2.setCursor(( u8g2.getDisplayWidth()- u8g2.getStrWidth("WAIT FOR OBD"))/2,u8g2.getDisplayHeight()-20);
       u8g2.print("WAIT FOR OBD");
       u8g2.sendBuffer();
-      digitalWrite(PC13,HIGH);
-      delay(200);
-      digitalWrite(PC13,LOW);
-      delay(200);
+      if(digitalRead( inputPins[1] ) == LOW){
+        break;
+      }
+      strobePin(PC13,2,250);
   }
   SetupTimer2();    //update input button
 }
 void loop(void) {
    //Serial.println(millis() - preview_time);
-   // if ( millis() - preview_time > 5 ){
+   //if ( millis() - preview_time > 5 ){
    UpdateDisplay();
    //preview_time = millis();
-   // }
+   //}
+}
+/*
+ * pin for LED pin
+ * count how many times
+ * rate is the frequency in ms
+ */
+void strobePin(unsigned int pin, long count, long rate)
+{
+    long  c;
+    while (count-- > 0)
+    {
+        for (c = rate; c > 0; c--)
+        {
+            delay(1);
+        }
+        digitalWrite(pin,HIGH);
+
+        for (c = rate; c > 0; c--)
+        {
+            delay(1);
+        }
+        digitalWrite(pin,LOW);
+    } 
 }

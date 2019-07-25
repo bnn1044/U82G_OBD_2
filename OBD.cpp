@@ -9,6 +9,7 @@
 #include <Wire.h>
 #include "OBD.h"
 //#define DEBUG Serial
+void displayDebug(char *msg);
 uint16_t hex2uint16(const char *p)
 {
   char c = *p;
@@ -101,7 +102,8 @@ bool COBD::available()
 }
 
 char COBD::read()
-{
+{ 
+  OBDUART.flush();
   char c = OBDUART.read();
 #ifdef DEBUG
     DEBUG.write(c);
@@ -121,8 +123,8 @@ void COBD::write(char c)
 
 int COBD::normalizeData(byte pid, char* data)
 {
- int result;
- int temResult;
+ int result ,temResult;
+ float atm;
   switch (pid) {
   case PID_RPM:
   case PID_EVAP_SYS_VAPOR_PRESSURE:
@@ -207,17 +209,29 @@ int COBD::normalizeData(byte pid, char* data)
    result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;
    break;
   case PID_BOOST_CONTROL:
+   //displayDebug(data);
+   
+   data[9] = data[18];
+   data[10] = data[19];
+   data[12] = data[23];
+   data[13] = data[24];
+   
    Serial.print(data[18]);
    Serial.print(",");
    Serial.print(data[19]);
    Serial.print(",");
-   Serial.print(data[20]);
+   Serial.print(data[23]);
    Serial.print(",");
-   Serial.print(data[21]);
-   Serial.print(",");
-   Serial.print(data[22]);
-   Serial.print(",");
-   Serial.println(data[13]);
+   Serial.println(data[24]);
+   result = getLargeValue(data)/32;
+   
+   atm  = ( result * 100.00 / 101.325 );  //to ATM 
+   if( atm >= 100 ){
+      atm = 14.696 * atm / 100.0 ;                    // to psi
+   }else if( atm <100 ){
+      atm = - 29.921 * atm / 100.0 ;                   // to inHG
+   }
+   result = atm;
    break;
   default:
     result = getSmallValue(data);
@@ -227,7 +241,7 @@ int COBD::normalizeData(byte pid, char* data)
 
 char* COBD::getResponse(byte& pid, char* buffer)
 {
-  while (receive(buffer, OBD_TIMEOUT_SHORT) > 0) {
+  while ( receive( buffer, OBD_TIMEOUT_SHORT ) > 0) {
     char *p = buffer;
     while ((p = strstr(p, "41 "))) {
         p += 3;
@@ -373,7 +387,6 @@ bool COBD::init(OBD_PROTOCOLS protocol)
   char buffer[OBD_RECV_BUF_SIZE];
   m_state = OBD_CONNECTING;
   recover();
-
   for (unsigned char i = 0; i < sizeof(initcmd) / sizeof(initcmd[0]); i++) {
 #ifdef DEBUG
     debugOutput(initcmd[i]);
