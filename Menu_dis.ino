@@ -124,47 +124,32 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
    u8g2.setFont(u8g2_font_saikyosansbold8_8u);
    u8g2.setCursor(0,7);                                                          //left top corner
    u8g2.print(PID1.name);
-   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID2.name ),7);     //Right top corner
-   u8g2.print(PID2.name);
+   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID4.name ),7);     //Right top corner
+   u8g2.print(PID4.name);
    u8g2.setCursor(0,39);                                                          //left bottom corner
    u8g2.print(PID3.name);                                   
-   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID4.name ),39);                                                          //left bottom corner
-   u8g2.print(PID4.name);   
+   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID2.name ),39);                                                          //left bottom corner
+   u8g2.print(PID2.name);   
      
    obd.read(PID1.PID_Number,data1);
    u8g2.setFont(u8g2_font_timB24_tn );
    u8g2.setCursor(0,31);                                                           //left top corner
    u8g2.print(data1);
 
-   //Serial.print("data 2 : ");
-   obd.read(PID2.PID_Number,data2);
-   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9999"),31);
-   if(data2 < 10){
-    u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9"),31);
-   }else if(data2 < 100){
-     u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("99"),31);
-   }else if( data2 < 1000 ){
-     u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("999"),31);
-   }
-   u8g2.print(data2);
+   obd.read(PID4.PID_Number,data4);
+   u8g2.setCursor(60,31);
+   u8g2.print(data4/100.0,2);
    obd.read(PID3.PID_Number,data3);
    u8g2.setCursor(0,63);                                                           
    u8g2.print(data3);
    
    obd.read(PID4.PID_Number,data4);
    char* tempdata;
-   obd.read_raw(PID4.PID_Number,tempdata);  
-   /*u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9999"),63);
-   if(data4 < 10 ){
-    u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9"),63);
-   }else if(data4 < 100){
-     u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("99"),63);
-   }else if( data4 < 1000 ){
-     u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("999"),63);
-   }                                                        
-   u8g2.print(float( data4 )/100.0,2);*/
-   Serial.print("raw data");
-   Serial.println(tempdata);
+   //obd.read_raw(PID4.PID_Number,tempdata);  
+
+   obd.read(PID2.PID_Number,data2);
+   u8g2.setCursor(85,63);
+   u8g2.print(data2);
 }
 void displayDebug(char *msg){
    u8g2.setFont(u8g2_font_saikyosansbold8_8u);

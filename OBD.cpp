@@ -103,7 +103,6 @@ bool COBD::available()
 
 char COBD::read()
 { 
-  OBDUART.flush();
   char c = OBDUART.read();
 #ifdef DEBUG
     DEBUG.write(c);
@@ -125,6 +124,7 @@ int COBD::normalizeData(byte pid, char* data)
 {
  int result ,temResult;
  float atm;
+ char Psistr[5];
   switch (pid) {
   case PID_RPM:
   case PID_EVAP_SYS_VAPOR_PRESSURE:
@@ -209,26 +209,39 @@ int COBD::normalizeData(byte pid, char* data)
    result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;
    break;
   case PID_BOOST_CONTROL:
-   data[9] = data[18];
-   data[10] = data[19];
-   data[12] = data[23];
-   data[13] = data[24];
-   Serial.print(data[18]);
-   Serial.print(",");
-   Serial.print(data[19]);
-   Serial.print(",");
-   Serial.print(data[23]);
-   Serial.print(",");
-   Serial.println(data[24]);
-   result = getLargeValue(data)/32;
+   //displayDebug(data);
+   /*data[0] = data[9];
+   data[1] = data[10];
+   data[2] = data[17];
+   data[3] = data[18];*/
+   Serial.println("boost");
+   /*for (int i = 0;i<sizeof(data);i++){
+    Serial.print(data[i]);
+   }*/
+   Psistr[0] = data[9];
+   Psistr[1] = data[10];
+   Psistr[2] = ' '; 
+   Psistr[3] = data[17];
+   Psistr[4] = data[18];
+   Psistr[5] ='\0';
    
-   atm  = ( result * 100.00 / 101.325 );  //to ATM 
-   if( atm >= 100 ){
-      atm = 14.696 * atm / 100.0 ;                    // to psi
-   }else if( atm <100 ){
-      atm = - 29.921 * atm / 100.0 ;                   // to inHG
+   /*Serial.print(Psistr[0]);
+   Serial.print(Psistr[1]);
+   Serial.print(Psistr[2]);
+   Serial.print(Psistr[3]);
+   Serial.print(Psistr[4]);
+   Serial.println(Psistr[5]);
+   */
+  // Serial.println(strtol(Psistr[0], NULL, 16),DEC);
+   
+   result = getLargeValue(Psistr)/32;
+   atm = ( float( result ) / 6.895 - 14.5038 ) *100.0;
+   Serial.println(result);
+   if(atm < 0 ){
+    atm  = atm * 2.0360206576012;
    }
    result = atm;
+   
    break;
   default:
     result = getSmallValue(data);
