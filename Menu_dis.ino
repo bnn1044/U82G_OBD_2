@@ -150,9 +150,10 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
    obd.read(PID3.PID_Number,data3);
    u8g2.setCursor(0,63);                                                           
    u8g2.print(data3);
+   
+   obd.read(PID4.PID_Number,data4);
    char* tempdata;
    obd.read_raw(PID4.PID_Number,tempdata);  
-   obd.read(PID4.PID_Number,data4);
    /*u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9999"),63);
    if(data4 < 10 ){
     u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth("9"),63);

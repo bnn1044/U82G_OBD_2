@@ -209,13 +209,10 @@ int COBD::normalizeData(byte pid, char* data)
    result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;
    break;
   case PID_BOOST_CONTROL:
-   //displayDebug(data);
-   
    data[9] = data[18];
    data[10] = data[19];
    data[12] = data[23];
    data[13] = data[24];
-   
    Serial.print(data[18]);
    Serial.print(",");
    Serial.print(data[19]);
