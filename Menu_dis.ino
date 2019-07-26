@@ -94,17 +94,31 @@ void UpdateDisplay(void){
        u8g2.print(menu_entry_list[destination_state.position].name);
        u8g2.sendBuffer();
     }while ( towards( &current_state, &destination_state ) );
-  }else{                                                        // display Gauge
+  }else{
     u8g2.clearBuffer();
-    //disPlay_PID(FavouritePID_List[FavouritePID].PID_Number,FavouritePID_List[FavouritePID].name);
-                 //COOLANT                ITA                    //RPM             BOOST
-    display4PIDs(FavouritePID_List[0],FavouritePID_List[1],FavouritePID_List[2],FavouritePID_List[3]);
+    switch ( destination_state.position ) {
+      case 0: 
+          display4PIDs(FavouritePID_List[0],FavouritePID_List[1],FavouritePID_List[2],FavouritePID_List[3]);
+          break;
+      case 1:
+          displayDebug("FAVOURITE");
+          break;
+      case 2:
+          displayDebug("SEARCH PID");
+          break;
+      case 3:
+          displayDebug("0-60 Time");
+          break;
+      case 4:
+          displayDebug("SETTING");
+          break;
+    }
     u8g2.sendBuffer();
   }
    Timer3.resume();
 }
 void disPlay_PID(int pid,const char *name){
-  int tempData;
+  float tempData;
   u8g2.setFont(u8g2_font_helvB10_tr);  
   u8g2.setCursor(( u8g2.getDisplayWidth()- u8g2.getStrWidth(name))/2 , 14);
   u8g2.print(name);                                                           //active_element.name);
@@ -115,43 +129,81 @@ void disPlay_PID(int pid,const char *name){
     u8g2.setCursor( ( u8g2.getDisplayWidth()- (u8g2.getStrWidth("9999") ) ) / 2 ,u8g2.getDisplayHeight() - 2);
     u8g2.print(tempData);
   }else{
-    //Serial.println(FavouritePID);
+    
   }
-  
 }
 void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3,struct pid_name PID4){
-  int data1,data2,data3,data4;
+  float data1,data2,data3,data4;
+  if(obd.getState() == OBD_CONNECTED){
+     obd.read(PID1.PID_Number,data1);
+     obd.read(PID2.PID_Number,data2);
+     obd.read(PID3.PID_Number,data3);
+     obd.read(PID4.PID_Number,data4);
+  }
+  else{
+    data1 = data2 = data3 = data4 = 0;
+  }
    u8g2.setFont(u8g2_font_saikyosansbold8_8u);
    u8g2.setCursor(0,7);                                                          //left top corner
    u8g2.print(PID1.name);
-   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID4.name ),7);     //Right top corner
-   u8g2.print(PID4.name);
+   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID2.name ),7);     //Right top corner
+   u8g2.print(PID2.name);
    u8g2.setCursor(0,39);                                                          //left bottom corner
    u8g2.print(PID3.name);                                   
-   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID2.name ),39);                                                          //left bottom corner
-   u8g2.print(PID2.name);   
-     
-   obd.read(PID1.PID_Number,data1);
-   u8g2.setFont(u8g2_font_timB24_tn );
-   u8g2.setCursor(0,31);                                                           //left top corner
-   u8g2.print(data1);
-
-   obd.read(PID4.PID_Number,data4);
-   u8g2.setCursor(60,31);
-   u8g2.print(data4/100.0,2);
-   obd.read(PID3.PID_Number,data3);
-   u8g2.setCursor(0,63);                                                           
-   u8g2.print(data3);
+   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID4.name ),39);                                                          //left bottom corner
+   u8g2.print(PID4.name);   
    
-   obd.read(PID4.PID_Number,data4);
-   char* tempdata;
-   //obd.read_raw(PID4.PID_Number,tempdata);  
-
-   obd.read(PID2.PID_Number,data2);
+   //left top corner 
+   u8g2.setFont(u8g2_font_timB24_tn );
+   u8g2.setCursor(0,31);                                                           
+   u8g2.print( data1,0 );
+   //right top corner
+   
+   u8g2.setCursor(u8g2.getDisplayWidth()- setCursorUseNumber(data2),31);
+   u8g2.print( data2,1 );
+   
+   //left bot corner
+   u8g2.setCursor(0,63);                                                           
+   u8g2.print(data3,0);
+   
+   //Righft bot corner
+   u8g2.setCursor(u8g2.getDisplayWidth()- setCursorUseNumber(data4),63);
    u8g2.setCursor(85,63);
-   u8g2.print(data2);
+   u8g2.print(data4,0);
+   
 }
 void displayDebug(char *msg){
+   u8g2.clearBuffer();
    u8g2.setFont(u8g2_font_saikyosansbold8_8u);
+   u8g2.setCursor(( u8g2.getDisplayWidth()- u8g2.getStrWidth(msg))/2,u8g2.getDisplayHeight()-20);
    u8g2.print(msg);
+   u8g2.sendBuffer();
+}
+int setCursorUseNumber(float number){
+  int numberWidth;
+  if((number < 0 )&&( number >= -10)){
+    numberWidth =  u8g2.getStrWidth("-9.9");
+  }
+  if((number < -10 )&&( number >= -100)){
+    numberWidth =  u8g2.getStrWidth("-99.9");
+  }
+  if((number < -10 )&&( number >= -100)){
+    numberWidth =  u8g2.getStrWidth("-99.9");
+  }
+  if((number < 10 )&&( number >= 0)){
+    numberWidth =  u8g2.getStrWidth("9.9");
+  }
+  if((number < 100 )&&( number >= 10)){
+    numberWidth =  u8g2.getStrWidth("99.9");
+  }
+  if( (number < 1000 )&&( number >= 100) ){
+    numberWidth =  u8g2.getStrWidth("999.9");
+  }
+  if( (number < 10000 )&&( number >= 1000) ){
+    numberWidth =  u8g2.getStrWidth("9999.9");
+  }
+  return numberWidth;
+}
+void display0to60Time(){
+  
 }

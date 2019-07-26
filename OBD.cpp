@@ -69,7 +69,7 @@ void COBD::sendQuery(byte pid)
   write(cmd);
 }
 
-bool COBD::read(byte pid, int& result)
+bool COBD::read(byte pid, float& result)
 {
   // send a query command
   sendQuery(pid);
@@ -120,10 +120,10 @@ void COBD::write(char c)
   OBDUART.write(c);
 }
 
-int COBD::normalizeData(byte pid, char* data)
+float COBD::normalizeData(byte pid, char* data)
 {
- int result ,temResult;
- float atm;
+ float result ,temResult;
+ //float atm;
  char Psistr[5];
   switch (pid) {
   case PID_RPM:
@@ -199,7 +199,7 @@ int COBD::normalizeData(byte pid, char* data)
     break;
   case PID_INTAKE_MAP:
     temResult = getSmallValue(data);
-    result = ( float( temResult ) * 0.14503 - 14.503 )*100.0;
+    result = temResult * 0.14503 - 14.503;
     break;
   case PID_SPEED:
     result = getSmallValue(data);
@@ -209,40 +209,21 @@ int COBD::normalizeData(byte pid, char* data)
    result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;
    break;
   case PID_BOOST_CONTROL:
-   //displayDebug(data);
-   /*data[0] = data[9];
-   data[1] = data[10];
-   data[2] = data[17];
-   data[3] = data[18];*/
    Serial.println("boost");
-   /*for (int i = 0;i<sizeof(data);i++){
-    Serial.print(data[i]);
-   }*/
    Psistr[0] = data[9];
    Psistr[1] = data[10];
    Psistr[2] = ' '; 
    Psistr[3] = data[17];
    Psistr[4] = data[18];
    Psistr[5] ='\0';
-   
-   /*Serial.print(Psistr[0]);
-   Serial.print(Psistr[1]);
-   Serial.print(Psistr[2]);
-   Serial.print(Psistr[3]);
-   Serial.print(Psistr[4]);
-   Serial.println(Psistr[5]);
-   */
-  // Serial.println(strtol(Psistr[0], NULL, 16),DEC);
-   
-   result = getLargeValue(Psistr)/32;
-   atm = ( float( result ) / 6.895 - 14.5038 ) *100.0;
-   Serial.println(result);
-   if(atm < 0 ){
-    atm  = atm * 2.0360206576012;
-   }
-   result = atm;
-   
+   temResult = getLargeValue( Psistr )/32.00;
+   temResult = ( temResult  / 6.895 - 14.5038 );
+   Serial.println(temResult);
+   if(temResult < 0 ){
+    result  = temResult * 2.0360206576012;
+   }   
    break;
+   
   default:
     result = getSmallValue(data);
   }
@@ -268,7 +249,7 @@ char* COBD::getResponse(byte& pid, char* buffer)
   return 0;
 }
 
-bool COBD::getResult(byte& pid, int& result)
+bool COBD::getResult(byte& pid, float& result)
 {
   char buffer[OBD_RECV_BUF_SIZE];
   char* data = getResponse(pid, buffer);
@@ -413,7 +394,7 @@ bool COBD::init(OBD_PROTOCOLS protocol)
   if (protocol != PROTO_AUTO) {
     setProtocol(protocol);
   }
-    int value;
+    float value;
   if (!read(PID_RPM, value)) {
     m_state = OBD_DISCONNECTED;
     return false;

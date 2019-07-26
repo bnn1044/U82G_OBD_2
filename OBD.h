@@ -105,7 +105,7 @@ public:
   // get connection state
   virtual OBD_STATES getState() { return m_state; }
   // read specified OBD-II PID value
-  virtual bool read(byte pid, int& result);
+  virtual bool read(byte pid, float& result);
   // read raw PID value including entire response
   virtual void read_raw(byte pid, char* result);
   // set device into
@@ -123,7 +123,7 @@ public:
   // send query for specified PID
   virtual void sendQuery(byte pid);
   // retrive and parse the response of specifie PID
-  virtual bool getResult(byte& pid, int& result);
+  virtual bool getResult(byte& pid, float& result);
   // determine if the PID is supported
   virtual bool isValidPID(byte pid);
   // set current PID mode
@@ -143,7 +143,7 @@ protected:
   virtual void dataIdleLoop() {}
   void recover();
   void debugOutput(const char* s);
-  int normalizeData(byte pid, char* data);
+  float normalizeData(byte pid, char* data);
   OBD_STATES m_state;
 private:
   virtual uint8_t getPercentageValue(char* data)
