@@ -127,7 +127,7 @@ float COBD::normalizeData(byte pid, char* data)
  //float atm;
  char Psistr[5];
   switch (pid) {
-  case PID_RPM:
+  case PID_RPM:                             //rpm
   case PID_EVAP_SYS_VAPOR_PRESSURE:
     result = getLargeValue(data) >> 2;
     break;
@@ -374,7 +374,7 @@ byte COBD::receive(char* buffer, int timeout)
 void COBD::recover()
 {
   write("AT\r");
-  receive(0, 1000);
+  receive(0, 200);
 }
 
 bool COBD::init(OBD_PROTOCOLS protocol)
@@ -395,7 +395,6 @@ bool COBD::init(OBD_PROTOCOLS protocol)
     delay(50);
   }
   while (available()) read();
-
   if (protocol != PROTO_AUTO) {
     setProtocol(protocol);
   }
@@ -421,7 +420,6 @@ bool COBD::init(OBD_PROTOCOLS protocol)
     delay(100);
   }
   while (available()) read();
-
   m_state = OBD_CONNECTED;
   read(PID_BAROMETRIC,BAROMETRIC);
   errors = 0;

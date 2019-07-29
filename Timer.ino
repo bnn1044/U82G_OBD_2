@@ -11,3 +11,16 @@ void SetupTimer2(){
   Timer2.attachInterrupt(TIMER_CH1,ReadButton);
   Timer2.resume();
 }
+void SetupTimer4(){
+  
+  Timer4.pause(); 
+  Timer4.setPrescaleFactor(3600);     //72000000 / 3600 = 2000hz,  500us
+  Timer4.setMode(TIMER_CH1, TIMER_OUTPUTCOMPARE);
+  Timer4.setCount(0);
+  Timer4.setOverflow(30000);
+  Timer4.setCompare(TIMER_CH1, 1000);   
+  Timer4.attachInterrupt(TIMER_CH1, Timer4_handler);
+  Timer4.refresh();
+  Timer4.resume();
+    
+}

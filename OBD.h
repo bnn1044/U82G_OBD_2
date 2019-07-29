@@ -68,7 +68,6 @@
 #define PID_ENGINE_REF_TORQUE 0x63
 #define PID_BOOST_CONTROL     0X70              //(D*256+E)/32
 #define PID_CHARGE_AIR_TEMP   0X77              //B-40
-
 typedef enum {
     PROTO_AUTO = 0,
     PROTO_ISO_9141_2 = 3,
@@ -135,7 +134,10 @@ public:
   
 protected:
   virtual char* getResponse(byte& pid, char* buffer);
-  virtual byte receive(char* buffer = 0, int timeout = OBD_TIMEOUT_SHORT);
+  
+  //virtual byte receive(char* buffer = 0, int timeout = OBD_TIMEOUT_SHORT);
+  
+  byte receive(char* buffer = 0, int timeout = 200);
   virtual bool available();
   virtual char read();
   virtual void write(const char* s);

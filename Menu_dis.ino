@@ -1,4 +1,4 @@
-int FavouritePid_Dis_timeOut;
+#include "U82g_OBD_2.h" 
 void draw(struct menu_state *state)
 {
   int16_t x;
@@ -98,7 +98,8 @@ void UpdateDisplay(void){
     u8g2.clearBuffer();
     switch ( destination_state.position ) {
       case 0: 
-          display4PIDs(FavouritePID_List[0],FavouritePID_List[1],FavouritePID_List[2],FavouritePID_List[3]);
+          display4PIDs(PID_List[5],PID_List[112],
+                       PID_List[14],PID_List[119]);
           break;
       case 1:
           displayDebug("FAVOURITE");
@@ -140,7 +141,6 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
      obd.read(PID2.PID_Number,data2);
      obd.read(PID3.PID_Number,data3);
      obd.read(PID4.PID_Number,data4);
-     
   }
   else{
     data1 = data2 = data3 = data4 = 0;
@@ -154,7 +154,6 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
    u8g2.print(PID3.name);                                   
    u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID4.name ),39);                                                          //left bottom corner
    u8g2.print(PID4.name);   
-   
    //left top corner 
    u8g2.setFont(u8g2_font_timB24_tn );
    u8g2.setCursor(0,31);                                                           
@@ -176,7 +175,7 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
 }
 void displayDebug(char *msg){
    u8g2.clearBuffer();
-   u8g2.setFont(u8g2_font_ncenB08_tr);
+   u8g2.setFont(u8g2_font_7x14B_tf  );
    u8g2.setCursor(( u8g2.getDisplayWidth()- u8g2.getStrWidth(msg))/2,u8g2.getDisplayHeight()-20);
    u8g2.print(msg);
    u8g2.sendBuffer();

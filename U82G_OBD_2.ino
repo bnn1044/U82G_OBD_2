@@ -3,6 +3,10 @@
 #include <Wire.h>
 #include <SPI.h>
 #include "OBD.h"
+#include <menu.h>
+#include <menuIO/keyIn.h>
+#include <menuIO/u8g2Out.h>
+//#include "U82g_OBD_2.h" 
 
 #define LED_BANK         GPIOC
 #define LED_PIN          13
@@ -11,7 +15,7 @@
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 COBD obd;
 
-#define ButtonUpdateRate_timer2  50000    //in mills
+#define ButtonUpdateRate_timer2  25000    //in mills
 
 const int numOfInputs = 3;
 int lastInputState[numOfInputs] = {HIGH,HIGH,HIGH};
@@ -28,16 +32,6 @@ long preview_time;
 #define FavouritePID_Max           10
 int FavouritePID = 0;
 boolean Menu_Favourite;
-struct pid_name{
-  int16_t PID_Number;
-  const char *name;
-};
-struct pid_name FavouritePID_List[10] = {
-  {PID_COOLANT_TEMP,"COOLANT"},   //1
-  {PID_BOOST_CONTROL,"  BOOST "},    //2
-  {PID_TIMING_ADVANCE,"TIME ADV"},                //3
-  {PID_CHARGE_AIR_TEMP,"ITA  "},//4
-};
 /*
   Icon configuration
   Width and height must match the icon font size
@@ -73,11 +67,9 @@ struct menu_state
 struct menu_entry_type menu_entry_list[] =
 {
   { u8g2_font_open_iconic_all_4x_t, 141, "GAUGES"},
-  { u8g2_font_open_iconic_all_4x_t, 183, "FAVOURITE"},
+  { u8g2_font_open_iconic_all_4x_t, 183, "SINGLE PID"},
   { u8g2_font_open_iconic_all_4x_t, 207, "SEARCH PID"},
   { u8g2_font_open_iconic_all_4x_t, 123, "0-60 Time"},
-  { u8g2_font_open_iconic_all_4x_t, 282, "SETTING"},
-  { u8g2_font_open_iconic_all_4x_t, 65, "EXIT"},
   { NULL, 0, NULL } 
 };
 
@@ -92,21 +84,17 @@ void setup(void) {
   digitalWrite(PC13,HIGH);
   initialButton();  
   u8g2.begin();
-
-  // try to initialized the OBD 3 times.
-  while(!obd.init()){
-      int timer = millis();
+  //SetupTimer4();
+  while((!obd.init())&&( digitalRead( inputPins[1] ))){
       displayDebug("INITIALIZE OBD");
-      strobePin(PC13,2,250);
-      if( digitalRead( inputPins[1] ) == LOW ){    // jump out of the while loop
-          break;
-      }
   }
   SetupTimer2();    //update input button
 }
 void loop(void) {
    UpdateDisplay();
-   //strobePin(PC13,2,200);
+}
+void Timer4_handler(){
+  strobePin(PC13,2,250);
 }
 /*
  * pin for LED pin
