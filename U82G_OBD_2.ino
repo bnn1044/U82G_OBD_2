@@ -28,7 +28,6 @@ long preview_time;
 #define FavouritePID_Max           10
 int FavouritePID = 0;
 boolean Menu_Favourite;
-
 struct pid_name{
   int16_t PID_Number;
   const char *name;
@@ -36,7 +35,7 @@ struct pid_name{
 struct pid_name FavouritePID_List[10] = {
   {PID_COOLANT_TEMP,"COOLANT"},   //1
   {PID_BOOST_CONTROL,"  BOOST "},    //2
-  {PID_RPM,"RPM  "},                //3
+  {PID_TIMING_ADVANCE,"TIME ADV"},                //3
   {PID_CHARGE_AIR_TEMP,"ITA  "},//4
 };
 /*
@@ -95,16 +94,12 @@ void setup(void) {
   u8g2.begin();
 
   // try to initialized the OBD 3 times.
-  while( ( obd.getState()!= OBD_CONNECTED ) && ( initialTry < 3 ) ){
+  while(!obd.init()){
       int timer = millis();
-      obd.init();
-      initialTry++;
-      while( millis()- timer < 5000 ){
-        displayDebug("INITIALIZE OBD");
-        strobePin(PC13,2,250);
-        if( digitalRead( inputPins[1] ) == LOW ){    // jump out of the while loop
+      displayDebug("INITIALIZE OBD");
+      strobePin(PC13,2,250);
+      if( digitalRead( inputPins[1] ) == LOW ){    // jump out of the while loop
           break;
-        }
       }
   }
   SetupTimer2();    //update input button

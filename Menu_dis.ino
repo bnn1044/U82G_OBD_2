@@ -134,11 +134,13 @@ void disPlay_PID(int pid,const char *name){
 }
 void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3,struct pid_name PID4){
   float data1,data2,data3,data4;
-  if(obd.getState() == OBD_CONNECTED){
+  Serial.println(obd.getState());
+  if( obd.getState() == OBD_CONNECTED ){
      obd.read(PID1.PID_Number,data1);
      obd.read(PID2.PID_Number,data2);
      obd.read(PID3.PID_Number,data3);
      obd.read(PID4.PID_Number,data4);
+     
   }
   else{
     data1 = data2 = data3 = data4 = 0;
@@ -174,7 +176,7 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
 }
 void displayDebug(char *msg){
    u8g2.clearBuffer();
-   u8g2.setFont(u8g2_font_saikyosansbold8_8u);
+   u8g2.setFont(u8g2_font_ncenB08_tr);
    u8g2.setCursor(( u8g2.getDisplayWidth()- u8g2.getStrWidth(msg))/2,u8g2.getDisplayHeight()-20);
    u8g2.print(msg);
    u8g2.sendBuffer();

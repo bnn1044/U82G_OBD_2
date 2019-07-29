@@ -10,6 +10,7 @@
 #include "OBD.h"
 //#define DEBUG Serial
 void displayDebug(char *msg);
+float   BAROMETRIC;
 uint16_t hex2uint16(const char *p)
 {
   char c = *p;
@@ -216,9 +217,13 @@ float COBD::normalizeData(byte pid, char* data)
    Psistr[3] = data[17];
    Psistr[4] = data[18];
    Psistr[5] ='\0';
+   /*
    temResult = getLargeValue( Psistr )/32.00;
    temResult = ( temResult  / 6.895 - 14.5038 );
-   Serial.println(temResult);
+   */
+   temResult = getLargeValue( Psistr )/ 32.00 - BAROMETRIC ;
+   temResult = ( temResult  / 6.895);
+   result= temResult;
    if(temResult < 0 ){
     result  = temResult * 2.0360206576012;
    }   
@@ -418,6 +423,7 @@ bool COBD::init(OBD_PROTOCOLS protocol)
   while (available()) read();
 
   m_state = OBD_CONNECTED;
+  read(PID_BAROMETRIC,BAROMETRIC);
   errors = 0;
   return true;
 }
