@@ -204,7 +204,7 @@ float COBD::normalizeData(byte pid, char* data)
     break;
   case PID_SPEED:
     result = getSmallValue(data);
-    result = float( result ) / 1.609;
+    result = float( result ) / 1.609;         // converted to mile
     break;
   case PID_CHARGE_AIR_TEMP:
    result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;

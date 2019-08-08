@@ -96,6 +96,7 @@ void UpdateDisplay(void){
     }while ( towards( &current_state, &destination_state ) );
   }else{
     u8g2.clearBuffer();
+    Serial.println(destination_state.position);
     switch ( destination_state.position ) {
       case 0: 
           display4PIDs(PID_List[5],PID_List[112],
@@ -108,7 +109,7 @@ void UpdateDisplay(void){
           displayDebug("SEARCH PID");
           break;
       case 3:
-          displayDebug("0-60 Time");
+          display0to60Time();
           break;
       case 4:
           displayDebug("SETTING");
@@ -135,7 +136,7 @@ void disPlay_PID(int pid,const char *name){
 }
 void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3,struct pid_name PID4){
   float data1,data2,data3,data4;
-  Serial.println(obd.getState());
+  //Serial.println(obd.getState());
   if( obd.getState() == OBD_CONNECTED ){
      obd.read(PID1.PID_Number,data1);
      obd.read(PID2.PID_Number,data2);
@@ -206,5 +207,41 @@ int setCursorUseNumber(float number){
   return numberWidth;
 }
 void display0to60Time(){
-  
+   float Speed;
+   long int StartTimer;
+   long int FinishTimer;
+   StartTimer = 0;
+   u8g2.setFont(u8g2_font_saikyosansbold8_8u);
+   u8g2.setCursor(0,7); 
+   Speed = 0;
+  /*if( obd.getState() == OBD_CONNECTED ){
+   obd.read(PID_SPEED,Speed);
+  }*/
+   // wait for speed =  0
+   while( Speed > 0){
+    if(anyButtonPress()){
+      Menu_Active = true;
+      break;
+    }
+    displayDebug("Stop First");
+    Serial.println( "Stop First" );
+   }
+   displayDebug("Ready ! ");
+   while(Speed < 60 ){
+      if( anyButtonPress() ){
+         Menu_Active = true;
+         break;
+      }
+      /*if( obd.getState() == OBD_CONNECTED ){
+        obd.read(PID_SPEED,Speed);
+      }*/
+      if( Speed > 0 ){
+        StartTimer = millis();
+      }
+      displayDebug("Waiting for speed");
+      Serial.println( "Waiting for speed" );
+      strobePin(PC13,2,100);
+      delay(50);
+   }
+   FinishTimer = millis() - StartTimer;
 }

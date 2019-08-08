@@ -29,7 +29,7 @@ struct pid_name PID_List[] = {
   {"Intake air temperature",       0x0F}, //    15
   {"MAF air flow rate",            0x10}, //    16
   {"Throttle position",            0x11}, //    17
-  {"secondary air status",         0x12}, //   18
+  {"secondary air status",         0x12}, //    18
   {"O2 sensors present",           0x13}, //    19
   {"O2 Sensor 1",                  0x14}, //    20
   {"O2 Sensor 2",                  0x15}, //    21
@@ -37,10 +37,10 @@ struct pid_name PID_List[] = {
   {"O2 Sensor 4",                  0x17}, //    23
   {"O2 Sensor 5",                  0x18}, //    24
   {"O2 Sensor 6",                  0x19}, //    25
-  {"O2 Sensor 7",                  0x1A}, //     26
-  {"O2 Sensor 8",                  0x1B}, //     27
-  {"OBD standards",                0x1C}, //     28
-  {"O2 sensors present",           0x1D}, //     29
+  {"O2 Sensor 7",                  0x1A}, //    26
+  {"O2 Sensor 8",                  0x1B}, //    27
+  {"OBD standards",                0x1C}, //    28
+  {"O2 sensors present",           0x1D}, //    29
   {"Aux input status",             0x1E}, //     30
   {"Engine Runtime",               0x1F}, //     31
   {"PIDs(21-40)",                  0x20}, //     32

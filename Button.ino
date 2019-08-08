@@ -40,25 +40,32 @@ void ReadButton(void){
 void handleMenuButton(){
  if ( ( inputFlags[2] == LOW )&&( Menu_Active ) ){to_right(&destination_state);inputFlags[2] = HIGH; NoButtonActiveTime = millis();}
  if ( ( inputFlags[0] == LOW )&&( Menu_Active ) ){to_left(&destination_state);inputFlags[0] = HIGH; NoButtonActiveTime = millis();}
- 
  if ( inputFlags[1] == LOW ){
    if (not Menu_Active){ 
     Menu_Active = true; 
    }
    NoButtonActiveTime = millis();
    inputFlags[1] = HIGH;
-   if ( destination_state.position == 5 ){  //exit
-      Menu_Active = false;
-      current_state = { ICON_BGAP, ICON_BGAP, 0 };
-      destination_state = { ICON_BGAP, ICON_BGAP, 0 };
-   }
+     UpdateDisplay();
   }
-  if( ( inputFlags[0] == HIGH) && 
+
+    if( ( inputFlags[0] == HIGH) && 
       ( inputFlags[1] == HIGH ) && 
       ( inputFlags[2] == HIGH )&& 
       ( ( millis()- NoButtonActiveTime ) > NoButtonActiveTimeout ) )
   {
     Menu_Active = false;
   }
-  
+}
+boolean anyButtonPress(){
+  if( ( inputFlags[0] == LOW) ||
+      ( inputFlags[1] == LOW ) ||
+      ( inputFlags[2] == LOW )  )
+  {
+    inputFlags[0] = HIGH;
+    inputFlags[1] = HIGH;
+    inputFlags[2] = HIGH;
+    return true;
+  }
+  return false;
 }

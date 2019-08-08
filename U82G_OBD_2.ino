@@ -77,7 +77,6 @@ struct menu_state current_state = { ICON_BGAP, ICON_BGAP, 0 };
 struct menu_state destination_state = { ICON_BGAP, ICON_BGAP, 0 };
 
 void setup(void) {
-  int initialTry;
   Serial.begin(38400);
   obd.begin(); 
   pinMode(PC13,OUTPUT);
