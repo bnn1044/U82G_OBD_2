@@ -83,7 +83,6 @@ void setup(void) {
   digitalWrite(PC13,HIGH);
   initialButton();  
   u8g2.begin();
-  //SetupTimer4();
   while((!obd.init())&&( digitalRead( inputPins[1] ))){
       displayDebug("INITIALIZE OBD");
   }

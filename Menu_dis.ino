@@ -96,7 +96,7 @@ void UpdateDisplay(void){
     }while ( towards( &current_state, &destination_state ) );
   }else{
     u8g2.clearBuffer();
-    Serial.println(destination_state.position);
+    //Serial.println(destination_state.position);
     switch ( destination_state.position ) {
       case 0: 
           display4PIDs(PID_List[5],PID_List[112],
@@ -149,10 +149,13 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
    u8g2.setFont(u8g2_font_saikyosansbold8_8u);
    u8g2.setCursor(0,7);                                                          //left top corner
    u8g2.print(PID1.name);
+
    u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID2.name ),7);     //Right top corner
    u8g2.print(PID2.name);
+
    u8g2.setCursor(0,39);                                                          //left bottom corner
-   u8g2.print(PID3.name);                                   
+   u8g2.print(PID3.name);
+                                    
    u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID4.name ),39);                                                          //left bottom corner
    u8g2.print(PID4.name);   
    //left top corner 
@@ -176,7 +179,7 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
 }
 void displayDebug(char *msg){
    u8g2.clearBuffer();
-   u8g2.setFont(u8g2_font_7x14B_tf  );
+   u8g2.setFont(u8g2_font_saikyosansbold8_8u);
    u8g2.setCursor(( u8g2.getDisplayWidth()- u8g2.getStrWidth(msg))/2,u8g2.getDisplayHeight()-20);
    u8g2.print(msg);
    u8g2.sendBuffer();
@@ -210,38 +213,62 @@ void display0to60Time(){
    float Speed;
    long int StartTimer;
    long int FinishTimer;
+   char* msg;
+   if( obd.getState() == OBD_CONNECTED ){
+     obd.read(PID_SPEED,Speed);
+   }
+   Serial.println(Speed);
    StartTimer = 0;
    u8g2.setFont(u8g2_font_saikyosansbold8_8u);
    u8g2.setCursor(0,7); 
-   Speed = 0;
-  /*if( obd.getState() == OBD_CONNECTED ){
-   obd.read(PID_SPEED,Speed);
-  }*/
-   // wait for speed =  0
-   while( Speed > 0){
-    if(anyButtonPress()){
-      Menu_Active = true;
-      break;
+   // check speed at 0
+   do{
+    if( obd.getState() == OBD_CONNECTED ){
+        obd.read(PID_SPEED,Speed);
     }
-    displayDebug("Stop First");
-    Serial.println( "Stop First" );
-   }
-   displayDebug("Ready ! ");
-   while(Speed < 60 ){
+    displayDebug("STOP FIRST!");
+    if( anyButtonPress() ){
+       Menu_Active = true;
+       menu_state current_state = { ICON_BGAP, ICON_BGAP, 0 };
+       menu_state destination_state = { ICON_BGAP, ICON_BGAP, 0 };
+       break;
+      }
+      Serial.println( ( int(Speed)> 0 ) );
+   } while( ( int( Speed ) > 0.00 ) );
+   
+   // check if speed >60;
+   StartTimer = 0;
+   do{
+      if( obd.getState() == OBD_CONNECTED ){
+          obd.read(PID_SPEED,Speed);
+      }
       if( anyButtonPress() ){
          Menu_Active = true;
+         menu_state current_state = { ICON_BGAP, ICON_BGAP, 0 };
+         menu_state destination_state = { ICON_BGAP, ICON_BGAP, 0 };
          break;
       }
-      /*if( obd.getState() == OBD_CONNECTED ){
-        obd.read(PID_SPEED,Speed);
-      }*/
-      if( Speed > 0 ){
+      u8g2.clearBuffer();
+      if( ( int( Speed )== 0 )){
         StartTimer = millis();
+        FinishTimer = millis() - StartTimer;   
+        msg = "READY!!";
+        u8g2.setFont(u8g2_font_saikyosansbold8_8u);
+        u8g2.setCursor(80,u8g2.getDisplayHeight()-20);
+        u8g2.print(msg);
+      }else{
+        FinishTimer = millis() - StartTimer;
+        msg = "";  
       }
-      displayDebug("Waiting for speed");
-      Serial.println( "Waiting for speed" );
-      strobePin(PC13,2,100);
-      delay(50);
-   }
-   FinishTimer = millis() - StartTimer;
+      u8g2.setFont(u8g2_font_timB24_tn );
+      u8g2.setCursor((u8g2.getDisplayWidth()- setCursorUseNumber(FinishTimer))/2,31);
+      u8g2.print( FinishTimer );
+      u8g2.setCursor((u8g2.getDisplayWidth()- setCursorUseNumber(Speed))/2,63);
+      u8g2.print( Speed );
+      u8g2.sendBuffer();
+      //strobePin(PC13,4,25);
+   }while( ( int( Speed ) < 60 ) );
+   
+   FinishTimer = millis() - StartTimer;   
+   
 }

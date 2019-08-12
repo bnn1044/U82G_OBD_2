@@ -46,9 +46,7 @@ void handleMenuButton(){
    }
    NoButtonActiveTime = millis();
    inputFlags[1] = HIGH;
-     UpdateDisplay();
   }
-
     if( ( inputFlags[0] == HIGH) && 
       ( inputFlags[1] == HIGH ) && 
       ( inputFlags[2] == HIGH )&& 

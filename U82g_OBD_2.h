@@ -16,7 +16,7 @@ struct pid_name PID_List[] = {
   {"Freeze DTC",                   0x02}, //    2
   {"Fuel system status",           0x03}, //    3
   {"Calculated engine load",       0x04}, //    4
-  {"coolant ",                     0x05}, //    5
+  {"COOLANT",                      0x05}, //    5
   {"Short fuel trim Bk1",          0x06}, //    6
   {"Long fuel trim Bk 1",          0x07}, //    7
   {"Short fuel trim Bk2",          0x08}, //    8
@@ -25,7 +25,7 @@ struct pid_name PID_List[] = {
   {"Intake man pressure",          0x0B}, //    11
   {"RPM",                          0x0C}, //    12
   {"Vehicle speed",                0x0D}, //    13
-  {"Timing advance",               0x0E}, //    14
+  {"TIM ADV",                      0x0E}, //    14
   {"Intake air temperature",       0x0F}, //    15
   {"MAF air flow rate",            0x10}, //    16
   {"Throttle position",            0x11}, //    17
@@ -123,14 +123,14 @@ struct pid_name PID_List[] = {
   {"Fuel pressure control",        0x6D}, //     109
   {"Injection pressure control",   0x6E}, //     110
   {"Turbocharger inlet pres",      0x6F}, //     111
-  {" Boost ",                      0x70}, //     112
+  {" BOOST ",                      0x70}, //     112
   {"(VGT) control",                0x71}, //     113
   {"Wastegate control",            0x72}, //     114
   {"Exhaust pressure",             0x73}, //     115
   {"Turbo RPM",                    0x74}, //     116
   {"Turbo Temp",                   0x75}, //     117
   {"Turbo Temp",                   0x76}, //     118
-  {" ITA ",                        0x77}, //     119
+  {"ITA",                          0x77}, //     119
   {"(EGT) Bank 1",                 0x78}, //     120
   {"(EGT) Bank2",                  0x79}, //     121
   {"(DPF)",                        0x7A}, //     122
