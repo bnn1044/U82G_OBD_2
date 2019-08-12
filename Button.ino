@@ -38,21 +38,27 @@ void ReadButton(void){
  Timer2.resume();
 }
 void handleMenuButton(){
- if ( ( inputFlags[2] == LOW )&&( Menu_Active ) ){to_right(&destination_state);inputFlags[2] = HIGH; NoButtonActiveTime = millis();}
- if ( ( inputFlags[0] == LOW )&&( Menu_Active ) ){to_left(&destination_state);inputFlags[0] = HIGH; NoButtonActiveTime = millis();}
- if ( inputFlags[1] == LOW ){
-   if (not Menu_Active){ 
-    Menu_Active = true; 
-   }
-   NoButtonActiveTime = millis();
-   inputFlags[1] = HIGH;
+  if ( inputFlags[2] == LOW){
+    menuNumber = menuNumber + 1;
+    if(menuNumber > menuNumberMax ){
+      menuNumber = 0;
+    }
+    NoButtonActiveTime = millis();
+    inputFlags[2] = HIGH;
+    Menu_Active = true;
   }
-    if( ( inputFlags[0] == HIGH) && 
-      ( inputFlags[1] == HIGH ) && 
-      ( inputFlags[2] == HIGH )&& 
-      ( ( millis()- NoButtonActiveTime ) > NoButtonActiveTimeout ) )
-  {
+  if ( inputFlags[0] == LOW ){
+    menuNumber = menuNumber - 1;
+    if(menuNumber < 0  ){
+      menuNumber = menuNumberMax;
+    }
+    NoButtonActiveTime = millis();
+    inputFlags[0] = HIGH;
+    Menu_Active = true;
+  }
+  if ( ( inputFlags[1] == LOW )&&( Menu_Active ) ){
     Menu_Active = false;
+    inputFlags[1] = HIGH;
   }
 }
 boolean anyButtonPress(){

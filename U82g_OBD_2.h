@@ -1,15 +1,8 @@
-
 struct pid_name{
   const char *name;
   int16_t PID_Number;
 };
-
-/*struct pid_name FavouritePID_List[] = {
-  {"COOLANT",PID_COOLANT_TEMP},   //1
-  {" BOOST ",PID_BOOST_CONTROL},    //2
-  {"TIME ADV",PID_TIMING_ADVANCE},                //3
-  {"ITA  ",PID_CHARGE_AIR_TEMP,},//4
-};*/
+int support_PID[143];
 struct pid_name PID_List[] = {
   {"PIDs supported",               0x00}, //    0
   {"status DTCs",                  0x01}, //    1
