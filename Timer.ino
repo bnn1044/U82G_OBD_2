@@ -12,7 +12,6 @@ void SetupTimer2(){
   Timer2.resume();
 }
 void SetupTimer4(){
-  
   Timer4.pause(); 
   Timer4.setPrescaleFactor(3600);     //72000000 / 3600 = 2000hz,  500us
   Timer4.setMode(TIMER_CH1, TIMER_OUTPUTCOMPARE);
@@ -22,5 +21,4 @@ void SetupTimer4(){
   Timer4.attachInterrupt(TIMER_CH1, Timer4_handler);
   Timer4.refresh();
   Timer4.resume();
-    
 }

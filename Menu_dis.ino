@@ -11,12 +11,11 @@ void drawIcon(int menuNumber)
 }
 /*
  * interrupt handlar for the timer 3
- * 
  */
 void UpdateDisplay(int menuNumber){
   int temdata;
   Timer3.pause();
-  Serial.println(Menu_Active);
+  //Serial.println(Menu_Active);
   if( Menu_Active ){    // display menu
     drawIcon(menuNumber);
   }else{
@@ -134,35 +133,33 @@ void display0to60Time(){
         obd.read(PID_SPEED,Speed);
     }
     displayDebug("STOP FIRST!");
-   } while( ( int( Speed ) > 0.00 ) );
-   
+   } while( ( int( Speed ) > 0) );
    // check if speed >60;
    StartTimer = 0;
    do{
       if( obd.getState() == OBD_CONNECTED ){
           obd.read(PID_SPEED,Speed);
       }
-
       if( ( int( Speed )== 0 )){
         StartTimer = millis();
         FinishTimer = millis() - StartTimer;   
-        msg = "READY!!";
-
       }else{
         FinishTimer = millis() - StartTimer;
-        msg = "";  
       }
       u8g2.clearBuffer();
-      u8g2.setFont(u8g2_font_saikyosansbold8_8u);
-      u8g2.setCursor(80,20);
-      u8g2.print(msg);
       u8g2.setFont(u8g2_font_timB24_tn );
-      u8g2.setCursor(0,31);
+      u8g2.setCursor(20,31);
       u8g2.print( FinishTimer /1000.0 , 2 );
-      u8g2.setCursor(0,63);
-      u8g2.print( Speed );
+      u8g2.setFont(u8g2_font_saikyosansbold8_8u);
+      u8g2.print(" S");
+      u8g2.setCursor(20,63);
+      u8g2.setFont(u8g2_font_timB24_tn );
+      u8g2.print( Speed,2 );
+      u8g2.setFont(u8g2_font_saikyosansbold8_8u);
+      u8g2.print(" M/H");
       u8g2.sendBuffer();
    }while( ( int( Speed ) < 60 ));
-   FinishTimer = millis() - StartTimer;   
-   
+}
+void displaySearchPID(){
+  
 }

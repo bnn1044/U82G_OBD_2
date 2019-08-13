@@ -8,20 +8,20 @@ struct pid_name PID_List[] = {
   {"status DTCs",                  0x01}, //    1
   {"Freeze DTC",                   0x02}, //    2
   {"Fuel system status",           0x03}, //    3
-  {"Calculated engine load",       0x04}, //    4
+  {"ENG LOAD",                     0x04}, //    4
   {"COOLANT",                      0x05}, //    5
   {"Short fuel trim Bk1",          0x06}, //    6
   {"Long fuel trim Bk 1",          0x07}, //    7
   {"Short fuel trim Bk2",          0x08}, //    8
   {"Long fuel trim Bk 2",          0x09}, //    9
-  {"Fuel pressure",                0x0A}, //    10
-  {"Intake man pressure",          0x0B}, //    11
+  {"Fuel PRE",                     0x0A}, //    10
+  {"BOOST",                        0x0B}, //    11
   {"RPM",                          0x0C}, //    12
-  {"Vehicle speed",                0x0D}, //    13
+  {"SPEED",                        0x0D}, //    13
   {"TIM ADV",                      0x0E}, //    14
-  {"Intake air temperature",       0x0F}, //    15
-  {"MAF air flow rate",            0x10}, //    16
-  {"Throttle position",            0x11}, //    17
+  {"ITA",                          0x0F}, //    15
+  {"MAF",                          0x10}, //    16
+  {"THR POS",                      0x11}, //    17
   {"secondary air status",         0x12}, //    18
   {"O2 sensors present",           0x13}, //    19
   {"O2 Sensor 1",                  0x14}, //    20
@@ -113,10 +113,10 @@ struct pid_name PID_List[] = {
   {"Diesel intake air flow",       0x6A}, //     106
   {"Ex gas recirc temp",           0x6B}, //     107
   {"Commanded thr actuator",       0x6C}, //     108
-  {"Fuel pressure control",        0x6D}, //     109
+  {"Fuel pre control",             0x6D}, //     109
   {"Injection pressure control",   0x6E}, //     110
-  {"Turbocharger inlet pres",      0x6F}, //     111
-  {" BOOST ",                      0x70}, //     112
+  {"BOOST",                        0x6F}, //     111
+  {"BOOST",                        0x70}, //     112
   {"(VGT) control",                0x71}, //     113
   {"Wastegate control",            0x72}, //     114
   {"Exhaust pressure",             0x73}, //     115
@@ -124,8 +124,8 @@ struct pid_name PID_List[] = {
   {"Turbo Temp",                   0x75}, //     117
   {"Turbo Temp",                   0x76}, //     118
   {"ITA",                          0x77}, //     119
-  {"(EGT) Bank 1",                 0x78}, //     120
-  {"(EGT) Bank2",                  0x79}, //     121
+  {"(EGT) 1",                      0x78}, //     120
+  {"(EGT) 2",                      0x79}, //     121
   {"(DPF)",                        0x7A}, //     122
   {"(DPF)",                        0x7B}, //     123
   {"(DPF) temperature",            0x7C}, //     124

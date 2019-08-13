@@ -4,7 +4,6 @@
 * Visit http://freematics.com for more information
 * (C)2012-2015 Stanley Huang <stanleyhuangyc@gmail.com>
 *************************************************************************/
-
 #include <Arduino.h>
 #include <Wire.h>
 #include "OBD.h"
