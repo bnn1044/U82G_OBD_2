@@ -9,17 +9,12 @@
 #define LED_ON_STATE     1
     
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
 COBD obd;
+int8_t button_event = 0;    // set this to 0, once the event has been processed
 
-#define ButtonUpdateRate_timer2  50000    //in mills
+#define ButtonUpdateRate_timer2  10000    //in mills
 
-const int numOfInputs = 3;
-int lastInputState[numOfInputs] = {HIGH,HIGH,HIGH};
-const int inputPins[numOfInputs] = {PB14,PB13,PB12};
-int inputState[numOfInputs];
-bool inputFlags[numOfInputs] = {HIGH,HIGH,HIGH};
-long lastDebounceTime[numOfInputs] = {0,0,0};
-long debounceDelay = 5;
 long NoButtonActiveTime = 0;
 long NoButtonActiveTimeout = 5000; 
 long preview_time; 
@@ -44,7 +39,6 @@ struct pid_name FavouritePID_List[10] = {
   GAP: Space between the icons
   BGAP: Gap between the display border and the cursor.
 */
-
 #define ICON_WIDTH 32
 #define ICON_HEIGHT 32
 #define ICON_GAP 4
@@ -80,25 +74,24 @@ struct menu_entry_type menu_entry_list[] =
   { u8g2_font_open_iconic_all_4x_t, 65, "EXIT"},
   { NULL, 0, NULL } 
 };
-
 struct menu_state current_state = { ICON_BGAP, ICON_BGAP, 0 };
 struct menu_state destination_state = { ICON_BGAP, ICON_BGAP, 0 };
 
+
 void setup(void) {
-  int initialTry;
   Serial.begin(38400);
   obd.begin(); 
   pinMode(PC13,OUTPUT);
   digitalWrite(PC13,HIGH);
-  initialButton();  
-  u8g2.begin();
-
-  // try to initialized the OBD 3 times.
+  pinMode(PB13,INPUT_PULLUP);
+  u8g2.begin(/* menu_select_pin= */ PB13, /* menu_next_pin= */ PB12, /* menu_prev_pin= */ PB14);
+  //try to initialized the OBD 
   while(!obd.init()){
-      int timer = millis();
       displayDebug("INITIALIZE OBD");
       strobePin(PC13,2,250);
-      if( digitalRead( inputPins[1] ) == LOW ){    // jump out of the while loop
+      //check_button_event();
+      Serial.println(digitalRead(PB13));
+      if( digitalRead(PB13) == 0 ){    // jump out of the while loop
           break;
       }
   }

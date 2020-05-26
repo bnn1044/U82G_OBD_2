@@ -8,6 +8,6 @@ void SetupTimer2(){
   Timer2.setPeriod(ButtonUpdateRate_timer2);          // in microseconds
   Timer2.setCompare(TIMER_CH1, 1);                    // overflow might be small
   Timer2.refresh();
-  Timer2.attachInterrupt(TIMER_CH1,ReadButton);
+  Timer2.attachInterrupt(TIMER_CH1,check_button_event);
   Timer2.resume();
 }
