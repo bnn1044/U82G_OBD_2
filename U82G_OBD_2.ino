@@ -44,7 +44,7 @@ struct menu_entry_type
 struct menu_entry_type menu_entry_list[] =
 {
   { u8g2_font_open_iconic_all_4x_t, 141, " 4 GAUGES"},
-  { u8g2_font_open_iconic_all_4x_t, 141, "SINGLE GAGUE"},
+  { u8g2_font_open_iconic_all_4x_t, 141, "SINGLE GAUGE"},
   { u8g2_font_open_iconic_all_4x_t, 207, "SEARCH PID"},
   { u8g2_font_open_iconic_all_4x_t, 123, "0-60 Time"},
 };
@@ -52,8 +52,7 @@ void setup(void) {
   Serial.begin(38400);
   obd.begin(); 
   pinMode(PC13,OUTPUT);
-  digitalWrite(PC13,HIGH);
-  initialButton();  
+  digitalWrite(PC13,HIGH);  
   u8g2.begin();
   while((!obd.init())&&( digitalRead( inputPins[1] ))){
       displayDebug("INITIALIZE OBD");
