@@ -4,7 +4,6 @@
 * Visit http://freematics.com for more information
 * (C)2012-2015 Stanley Huang <stanleyhuangyc@gmail.com>
 *************************************************************************/
-
 #include <Arduino.h>
 #include <Wire.h>
 #include "OBD.h"
@@ -127,7 +126,7 @@ float COBD::normalizeData(byte pid, char* data)
  //float atm;
  char Psistr[5];
   switch (pid) {
-  case PID_RPM:
+  case PID_RPM:                             //rpm
   case PID_EVAP_SYS_VAPOR_PRESSURE:
     result = getLargeValue(data) >> 2;
     break;
@@ -204,7 +203,7 @@ float COBD::normalizeData(byte pid, char* data)
     break;
   case PID_SPEED:
     result = getSmallValue(data);
-    result = float( result ) / 1.609;
+    result = float( result ) / 1.609;         // converted to mile
     break;
   case PID_CHARGE_AIR_TEMP:
    result = getLargeValue(data) - ( getSmallValue(data)*256 )- 40;
@@ -374,7 +373,7 @@ byte COBD::receive(char* buffer, int timeout)
 void COBD::recover()
 {
   write("AT\r");
-  receive(0, 1000);
+  receive(0, 200);
 }
 
 bool COBD::init(OBD_PROTOCOLS protocol)
@@ -395,7 +394,6 @@ bool COBD::init(OBD_PROTOCOLS protocol)
     delay(50);
   }
   while (available()) read();
-
   if (protocol != PROTO_AUTO) {
     setProtocol(protocol);
   }
@@ -421,7 +419,6 @@ bool COBD::init(OBD_PROTOCOLS protocol)
     delay(100);
   }
   while (available()) read();
-
   m_state = OBD_CONNECTED;
   read(PID_BAROMETRIC,BAROMETRIC);
   errors = 0;
