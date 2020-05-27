@@ -12,13 +12,13 @@ void check_button_event(void)
     button_event = u8g2.getMenuEvent();
   }
   Serial.println(button_event);
-  processButtonEven();
-   Timer2.resume();
+  processButtonEvent();
+  Timer2.resume();
 }
 /*
- * Process the button even
+ * Process the button event
  */
-void processButtonEven(){
+void processButtonEvent(){
  if ( ( button_event == U8X8_MSG_GPIO_MENU_NEXT )&&( Menu_Active ) ){to_right(&destination_state); NoButtonActiveTime = millis();button_event = 0;}
  if ( ( button_event == U8X8_MSG_GPIO_MENU_PREV )&&( Menu_Active ) ){to_left(&destination_state); NoButtonActiveTime = millis(); button_event = 0;}
  if ( button_event == U8X8_MSG_GPIO_MENU_SELECT ){
@@ -41,5 +41,4 @@ void processButtonEven(){
   {
     Menu_Active = false;
   }
-  
 }

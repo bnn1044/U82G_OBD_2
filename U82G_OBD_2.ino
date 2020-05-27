@@ -3,7 +3,6 @@
 #include <Wire.h>
 #include <SPI.h>
 #include "OBD.h"
-
 #define LED_BANK         GPIOC
 #define LED_PIN          13
 #define LED_ON_STATE     1
@@ -12,27 +11,13 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 COBD obd;
 int8_t button_event = 0;    // set this to 0, once the event has been processed
-
 #define ButtonUpdateRate_timer2  10000    //in mills
+
 
 long NoButtonActiveTime = 0;
 long NoButtonActiveTimeout = 5000; 
 long preview_time; 
 
-//variable for setting up favourate
-#define FavouritePID_Max           10
-int FavouritePID = 0;
-boolean Menu_Favourite;
-struct pid_name{
-  int16_t PID_Number;
-  const char *name;
-};
-struct pid_name FavouritePID_List[10] = {
-  {PID_COOLANT_TEMP,"COOLANT"},   //1
-  {PID_BOOST_CONTROL,"  BOOST "},    //2
-  {PID_TIMING_ADVANCE,"TIME ADV"},                //3
-  {PID_CHARGE_AIR_TEMP,"ITA  "},//4
-};
 /*
   Icon configuration
   Width and height must match the icon font size
@@ -44,62 +29,42 @@ struct pid_name FavouritePID_List[10] = {
 #define ICON_GAP 4
 #define ICON_BGAP 16
 #define ICON_Y 32+ ICON_GAP
+#define menuNumberMax 3
+
 boolean Menu_Active = false;
-struct active_element
-{
-  const char *name;       
-  int16_t pid;
-  const char *unit;
-};
+int menuNumber = 0;
+
 struct menu_entry_type
 {
   const uint8_t *font;
   uint16_t icon;
   const char *name;
 };
-struct menu_state
-{
-  int16_t menu_start;        /* in pixel */
-  int16_t frame_position;   /* in pixel */
-  uint8_t position;         /* position, array index */
-};
 
 struct menu_entry_type menu_entry_list[] =
 {
-  { u8g2_font_open_iconic_all_4x_t, 141, "GAUGES"},
-  { u8g2_font_open_iconic_all_4x_t, 183, "FAVOURITE"},
+  { u8g2_font_open_iconic_all_4x_t, 141, " 4 GAUGES"},
+  { u8g2_font_open_iconic_all_4x_t, 141, "SINGLE GAGUE"},
   { u8g2_font_open_iconic_all_4x_t, 207, "SEARCH PID"},
   { u8g2_font_open_iconic_all_4x_t, 123, "0-60 Time"},
-  { u8g2_font_open_iconic_all_4x_t, 282, "SETTING"},
-  { u8g2_font_open_iconic_all_4x_t, 65, "EXIT"},
-  { NULL, 0, NULL } 
 };
-struct menu_state current_state = { ICON_BGAP, ICON_BGAP, 0 };
-struct menu_state destination_state = { ICON_BGAP, ICON_BGAP, 0 };
-
-
 void setup(void) {
   Serial.begin(38400);
   obd.begin(); 
   pinMode(PC13,OUTPUT);
   digitalWrite(PC13,HIGH);
-  pinMode(PB13,INPUT_PULLUP);
-  u8g2.begin(/* menu_select_pin= */ PB13, /* menu_next_pin= */ PB12, /* menu_prev_pin= */ PB14);
-  //try to initialized the OBD 
-  while(!obd.init()){
+  initialButton();  
+  u8g2.begin();
+  while((!obd.init())&&( digitalRead( inputPins[1] ))){
       displayDebug("INITIALIZE OBD");
-      strobePin(PC13,2,250);
-      //check_button_event();
-      Serial.println(digitalRead(PB13));
-      if( digitalRead(PB13) == 0 ){    // jump out of the while loop
-          break;
-      }
   }
   SetupTimer2();    //update input button
 }
 void loop(void) {
-   UpdateDisplay();
-   //strobePin(PC13,2,200);
+   UpdateDisplay(menuNumber);
+}
+void Timer4_handler(){
+  strobePin(PC13,2,250);
 }
 /*
  * pin for LED pin
