@@ -52,10 +52,11 @@ void setup(void) {
   Serial.begin(38400);
   obd.begin(); 
   pinMode(PC13,OUTPUT);
+  pinMode(PB13,OUTPUT);
   digitalWrite(PC13,HIGH);  
-  u8g2.begin();
-  while((!obd.init())&&( digitalRead( inputPins[1] ))){
-      displayDebug("INITIALIZE OBD");
+  u8g2.begin(/*menu select*/PB13, /*menu_prev*/PB14,/*menu_next*/PB12);
+  while((!obd.init())&&( digitalRead(PB13) ) ){
+      displayMsg("INITIALIZE OBD");
   }
   SetupTimer2();    //update input button
 }

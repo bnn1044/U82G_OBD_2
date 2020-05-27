@@ -25,7 +25,7 @@ void UpdateDisplay(int menuNumber){
           display4PIDs(PID_List[5],PID_List[112],PID_List[14],PID_List[119]);
           break;
       case 1:
-          displayDebug("SINGLE GAUGE");
+          displayMsg("SINGLE GAUGE");
           break;
       case 2:
           displaySearchPID();
@@ -81,7 +81,7 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
    u8g2.print(data4,0);
    
 }
-void displayDebug(char *msg){
+void displayMsg(char *msg){
    u8g2.clearBuffer();
    u8g2.setFont(u8g2_font_pxplustandynewtv_8f);
    u8g2.setCursor(( u8g2.getDisplayWidth()- u8g2.getStrWidth(msg))/2,u8g2.getDisplayHeight()-20);
@@ -129,9 +129,9 @@ void display0to60Time(){
     if( obd.getState() == OBD_CONNECTED ){
         obd.read(PID_SPEED,Speed);
     }
-    displayDebug("STOP FIRST!");
+    displayMsg("STOP FIRST!");
    } while( ( int( Speed ) > 0) );
-   // check if speed >60;
+   
    StartTimer = 0;
    do{
       if( obd.getState() == OBD_CONNECTED ){
@@ -155,7 +155,7 @@ void display0to60Time(){
       u8g2.setFont(u8g2_font_pxplustandynewtv_8f);
       u8g2.print(" M/H");
       u8g2.sendBuffer();
-      if(anyButtonPress()){
+      if(button_event != 0 ) {
         menuNumber = 0;
         break;
       }
