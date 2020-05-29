@@ -118,6 +118,7 @@ void display0to60Time(){
    long int StartTimer;
    long int FinishTimer;
    char* msg;
+   boolean TestOver;
    if( obd.getState() == OBD_CONNECTED ){
      obd.read(PID_SPEED,Speed);
    }
@@ -131,7 +132,6 @@ void display0to60Time(){
     }
     displayMsg("STOP FIRST!");
    } while( ( int( Speed ) > 0) );
-   
    StartTimer = 0;
    do{
       if( obd.getState() == OBD_CONNECTED ){
@@ -155,11 +155,13 @@ void display0to60Time(){
       u8g2.setFont(u8g2_font_pxplustandynewtv_8f);
       u8g2.print(" M/H");
       u8g2.sendBuffer();
-      if(button_event != 0 ) {
+      if( digitalRead(PB13) == 0 ) {
         menuNumber = 0;
+        TestOver = true;
         break;
       }
-   }while( ( int( Speed ) < 60 ));
+   }while( ( int( Speed ) < 60 )||( !TestOver ));
+   TestOver = false;
 }
 void displaySearchPID(){
    char* buffer;

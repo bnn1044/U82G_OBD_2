@@ -15,6 +15,7 @@ void check_button_event(void)
  * Process the button event
  */
 void processButtonEvent(){
+  
   if ( button_event == U8X8_MSG_GPIO_MENU_NEXT){
     menuNumber = menuNumber + 1;
     if(menuNumber > menuNumberMax ){
