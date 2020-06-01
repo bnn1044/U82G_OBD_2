@@ -1,6 +1,5 @@
 #include "U82g_OBD_2.h" 
-void drawIcon(int menuNumber)
-{
+void drawIcon(int menuNumber){
    u8g2.clearBuffer();
    u8g2.setFont(menu_entry_list[menuNumber].font);
    u8g2.drawGlyph( ( ( 128 - ICON_WIDTH )/2 ), ICON_Y, menu_entry_list[menuNumber].icon );
@@ -22,7 +21,7 @@ void UpdateDisplay(int menuNumber){
     u8g2.clearBuffer();
     switch ( menuNumber ) {
       case 0: 
-          display4PIDs(PID_List[5],PID_List[112],PID_List[14],PID_List[119]);
+        //  display4PIDs(PID_List[5],PID_List[112],PID_List[14],PID_List[119]);
           break;
       case 1:
           displayMsg("SINGLE GAUGE");
@@ -41,7 +40,7 @@ void UpdateDisplay(int menuNumber){
 void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3,struct pid_name PID4){
   float data1,data2,data3,data4;
   //Serial.println(obd.getState());
-  if( obd.getState() == OBD_CONNECTED ){
+ /* if( obd.getState() == OBD_CONNECTED ){
      obd.read(PID1.PID_Number,data1);
      obd.read(PID2.PID_Number,data2);
      obd.read(PID3.PID_Number,data3);
@@ -49,7 +48,7 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
   }
   else{
     data1 = data2 = data3 = data4 = 0;
-  }
+  }*/
    u8g2.setFont(u8g2_font_saikyosansbold8_8u);
    u8g2.setCursor(0,7);                                                          //left top corner
    u8g2.print(PID1.name);
@@ -114,29 +113,23 @@ int setCursorUseNumber(float number){
   return numberWidth;
 }
 void display0to60Time(){
-   float Speed;
+   byte Speed;
    long int StartTimer;
    long int FinishTimer;
    char* msg;
    boolean TestOver;
-   if( obd.getState() == OBD_CONNECTED ){
-     obd.read(PID_SPEED,Speed);
-   }
+   int status = Elm.vehicleSpeed(Speed);
    StartTimer = 0;
    u8g2.setFont(u8g2_font_saikyosansbold8_8u);
    u8g2.setCursor(0,7); 
    // check speed at 0
    do{
-    if( obd.getState() == OBD_CONNECTED ){
-        obd.read(PID_SPEED,Speed);
-    }
+    status = Elm.vehicleSpeed(Speed);
     displayMsg("STOP FIRST!");
    } while( ( int( Speed ) > 0) );
    StartTimer = 0;
    do{
-      if( obd.getState() == OBD_CONNECTED ){
-          obd.read(PID_SPEED,Speed);
-      }
+      status = Elm.vehicleSpeed(Speed);
       if( ( int( Speed )== 0 )){
         StartTimer = millis();
         FinishTimer = millis() - StartTimer;   
@@ -166,10 +159,9 @@ void display0to60Time(){
 void displaySearchPID(){
    char* buffer;
    char* temp;
-
-   if( obd.getState() == OBD_CONNECTED ){
+   /*if( obd.getState() == OBD_CONNECTED ){
        obd.sendCommand("0100\r", buffer);
-   }
+   }*/
    char *p = strstr(buffer,"41 00");
    if(p){
     temp[0] = buffer[6];
@@ -191,5 +183,4 @@ void displaySearchPID(){
    u8g2.sendBuffer();
 }
 void displaySinglePid(){
-  
 }
