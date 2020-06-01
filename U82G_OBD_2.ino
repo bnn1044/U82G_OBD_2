@@ -13,7 +13,6 @@ COBD obd;
 int8_t button_event = 0;    // set this to 0, once the event has been processed
 #define ButtonUpdateRate_timer2  10000    //in mills
 
-
 long NoButtonActiveTime = 0;
 long NoButtonActiveTimeout = 5000; 
 long preview_time; 
@@ -33,7 +32,6 @@ long preview_time;
 
 boolean Menu_Active = false;
 int menuNumber = 0;
-
 struct menu_entry_type
 {
   const uint8_t *font;

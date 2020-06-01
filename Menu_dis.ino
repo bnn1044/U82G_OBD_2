@@ -190,3 +190,6 @@ void displaySearchPID(){
    u8g2.print(temp);
    u8g2.sendBuffer();
 }
+void displaySinglePid(){
+  
+}
