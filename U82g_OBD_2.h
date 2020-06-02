@@ -3,7 +3,6 @@ struct pid_name{
   int16_t PID_Number;
   unsigned int numValues;
 };
-//int support_PID[143];
 struct pid_name PID_List[] = {
   // pid NAME                     PID_Number, BYTES
   {"PIDs supported",               0x00,          4 }, //    0
@@ -16,7 +15,7 @@ struct pid_name PID_List[] = {
   {"Long fuel trim Bk 1",          0x07,          1 }, //    7
   {"Short fuel trim Bk2",          0x08,          1 }, //    8
   {"Long fuel trim Bk 2",          0x09,          1 }, //    9
-  {"Fuel PRE",                     0x0A,          1 }, //    10
+  {"Fuel PRESSURE",                0x0A,          1 }, //    10
   {"BOOST",                        0x0B,          1 }, //    11
   {"RPM",                          0x0C,          2 }, //    12
   {"SPEED",                        0x0D,          1 }, //    13

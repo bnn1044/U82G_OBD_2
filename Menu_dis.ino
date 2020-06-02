@@ -13,15 +13,15 @@ void drawIcon(int menuNumber){
  */
 void UpdateDisplay(int menuNumber){
   int temdata;
+  pid_name OBDPID;
   Timer3.pause();
-  //Serial.println(Menu_Active);
   if( Menu_Active ){    // display menu
     drawIcon(menuNumber);
   }else{
     u8g2.clearBuffer();
     switch ( menuNumber ) {
       case 0: 
-        //  display4PIDs(PID_List[5],PID_List[112],PID_List[14],PID_List[119]);
+          display4PIDs();
           break;
       case 1:
           displayMsg("SINGLE GAUGE");
@@ -37,7 +37,7 @@ void UpdateDisplay(int menuNumber){
   }
    Timer3.resume();
 }
-void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3,struct pid_name PID4){
+void display4PIDs(){
   float data1,data2,data3,data4;
   //Serial.println(obd.getState());
  /* if( obd.getState() == OBD_CONNECTED ){
@@ -46,39 +46,63 @@ void display4PIDs(struct pid_name PID1,struct pid_name PID2,struct pid_name PID3
      obd.read(PID3.PID_Number,data3);
      obd.read(PID4.PID_Number,data4);
   }
-  else{
+  else{*/
     data1 = data2 = data3 = data4 = 0;
-  }*/
-   u8g2.setFont(u8g2_font_saikyosansbold8_8u);
-   u8g2.setCursor(0,7);                                                          //left top corner
-   u8g2.print(PID1.name);
+  //}
+   menuLevel = SEL_Gauge_Menu;
+   switch (GaugeNumber){
+      case 1 :              // top left corner selected
+          u8g2.drawBox(0,10,30 ,24);
+          break;
+      case 2 :              // top left corner selected
+          u8g2.drawBox(100,10,50 ,24);
+          break;
+      case 3 :              // top left corner selected
+          u8g2.drawBox(0,45,50 ,24);
+          break;
+      case 4 :              // top left corner selected
+          u8g2.drawBox(100,45,50 ,24);
+      break;
+   }
+   if(!Gauge_Active){
+      u8g2.setFont(u8g2_font_saikyosansbold8_8u);
+      u8g2.setCursor(0,7);                                                          //left top corner
+      u8g2.print(PID_List[5].name);
 
-   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID2.name ),7);     //Right top corner
-   u8g2.print(PID2.name);
+      u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth(PID_List[111].name ),7);     //Right top corner
+      u8g2.print(PID_List[111].name);
 
-   u8g2.setCursor(0,39);                                                          //left bottom corner
-   u8g2.print(PID3.name);
+      u8g2.setCursor(0,39);                                                          //left bottom corner
+      u8g2.print(PID_List[14].name);
                                     
-   u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID4.name ),39);                                                          //left bottom corner
-   u8g2.print(PID4.name);   
-   //left top corner 
-   u8g2.setFont(u8g2_font_timB24_tn );
-   u8g2.setCursor(0,31);                                                           
-   u8g2.print( data1,0 );
-   //right top corner
+      u8g2.setCursor(u8g2.getDisplayWidth()- u8g2.getStrWidth( PID_List[15].name ),39);                                                          //left bottom corner
+      u8g2.print(PID_List[15].name);   
+      
+       //left top corner 
+      u8g2.setFont(u8g2_font_timB24_tn );
+      u8g2.setCursor(0,31);                                                           
+      u8g2.print( data1,0 );
+      //right top corner
    
-   u8g2.setCursor(u8g2.getDisplayWidth()- setCursorUseNumber(data2),31);
-   u8g2.print( data2,1 );
+      u8g2.setCursor(u8g2.getDisplayWidth()- setCursorUseNumber(data2),31);
+      u8g2.print( data2,1 );
    
-   //left bot corner
-   u8g2.setCursor(0,63);                                                           
-   u8g2.print(data3,0);
+      //left bot corner
+      u8g2.setCursor(0,63);                                                           
+      u8g2.print(data3,0);
    
-   //Righft bot corner
-   u8g2.setCursor(u8g2.getDisplayWidth()- setCursorUseNumber(data4),63);
-   u8g2.setCursor(85,63);
-   u8g2.print(data4,0);
-   
+      //Righft bot corner
+      u8g2.setCursor(u8g2.getDisplayWidth()- setCursorUseNumber(data4),63);
+      u8g2.setCursor(85,63);
+      u8g2.print(data4,0);
+   }else if(Gauge_Active){
+      u8g2.setFont(u8g2_font_tenthinguys_t_all  );
+      u8g2.setCursor(5,26);  
+      u8g2.print(PID_List[Selected_PID_Number].name); 
+      Serial.println(Selected_PID_Number);
+      Serial.println(PID_List[Selected_PID_Number].name); 
+      Serial.println(u8g2.getStrWidth( PID_List[Selected_PID_Number].name ) );
+   }
 }
 void displayMsg(char *msg){
    u8g2.clearBuffer();

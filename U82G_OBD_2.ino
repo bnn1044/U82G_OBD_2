@@ -7,6 +7,13 @@
 #define LED_PIN          13
 #define LED_ON_STATE     1
 
+int menuLevel;
+int GaugeNumber = 1;
+boolean Gauge_Active;
+int Selected_PID_Number;
+#define MAIN_MENU 1
+#define SEL_Gauge_Menu 2
+
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 Elm327 Elm;
 int8_t button_event = 0;    // set this to 0, once the event has been processed
@@ -48,10 +55,10 @@ void setup(void) {
   pinMode(PC13,OUTPUT);
   pinMode(PB13,OUTPUT);
   digitalWrite(PC13,HIGH);  
-  u8g2.begin(/*menu select*/PB13, /*menu_prev*/PB14,/*menu_next*/PB12);
-  while((Elm.begin() != ELM_SUCCESS)&&( digitalRead(PB13) ) ){
+  u8g2.begin(/*menu select*/PB13, /*menu_prev*/PB12,/*menu_next*/PB14);
+ /* while((Elm.begin() != ELM_SUCCESS)&&( digitalRead(PB13) ) ){
       displayMsg("INITIALIZE OBD");
-  }
+  }*/
   SetupTimer2();    //update input button
 }
 void loop(void) {
